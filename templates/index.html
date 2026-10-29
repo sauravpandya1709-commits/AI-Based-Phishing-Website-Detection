@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title>AI Phishing Detector</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 600px;
+            margin: 25px auto;
+            padding: 24px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px #0001;
+        }
+        h1 { color: #0f766e; }
+        input {
+            width: 100%;
+            padding: 13px;
+            margin: 10px 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 13px;
+            background: #0f766e;
+            color: white;
+            border: 0;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .report {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 10px;
+            overflow-wrap: anywhere;
+        }
+        .warning { color: #b91c1c; }
+        .success { color: #047857; }
+        .note { color: #64748b; font-size: 13px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🛡️ AI Phishing Detector</h1>
+    <p>Check a URL for possible phishing indicators.</p>
+
+    <form method="POST">
+        <label for="url">Enter Website URL</label>
+        <input type="text" id="url" name="url"
+               maxlength="2048"
+               placeholder="https://example.com"
+               required>
+        <button type="submit">Analyze Website</button>
+    </form>
+
+    {% if error %}
+        <div class="report warning">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    {% if result %}
+        <div class="report">
+            <h2>Analysis Report</h2>
+            <p><b>Website URL:</b> {{ result.url }}</p>
+            <p><b>URL Length:</b> {{ result.length }}</p>
+            <p><b>Contains @:</b> {{ result.has_at }}</p>
+            <p><b>Number of Dots:</b> {{ result.dots }}</p>
+            <p><b>HTTPS Enabled:</b> {{ result.https }}</p>
+            <p><b>Number of Hyphens:</b> {{ result.hyphens }}</p>
+            <p><b>Phishing Probability:</b>
+                {{ "%.2f"|format(result.probability) }}%
+            </p>
+            <p><b>Risk Score:</b> {{ result.risk }}/5</p>
+
+            {% if result.prediction == 1 %}
+                <h3 class="warning">
+                    ⚠️ RESULT: PHISHING WEBSITE
+                </h3>
+                <p>Avoid entering passwords, OTPs,
+                   or banking details.</p>
+            {% else %}
+                <h3 class="success">
+                    RESULT: Classified as legitimate
+                </h3>
+                <p>This prediction does not guarantee safety.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <p class="note">
+        Educational prototype. The model uses only a small
+        sample dataset. Predictions may be inaccurate.
+        Do not rely on this tool for real security decisions.
+    </p>
+</div>
+</body>
+</html>
